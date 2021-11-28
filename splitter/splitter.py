@@ -17,11 +17,14 @@ if __name__ == "__main__":
     (train_x, train_y), (test_x, test_y) = tf.keras.datasets.imdb.load_data(num_words = 10000)
 
     max_len = 500
+    print("flag1")
     train_x = tf.keras.preprocessing.sequence.pad_sequences(train_x, maxlen=max_len)
     test_x = tf.keras.preprocessing.sequence.pad_sequences(test_x, maxlen=max_len)
+    print("flag2")
 
 
     n_data = len(train_x) // args.n_container
     for name, i in enumerate(range(0, len(train_x), n_data)):
         start, end = i, i + n_data
         np.savez(os.path.join(args.savedir, str(name)), x=train_x[start:end], y=train_y[start:end])
+    print("flag3")
