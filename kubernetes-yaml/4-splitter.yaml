@@ -7,7 +7,7 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-      - image: kkp6249/imdb-kubernetes:splitter-1.0.0
+      - image: kkp6249/imdb-kubernetes:splitter-1.0.1
         args: ["--n_container", "{{WORKER_NUMBER}}", "--output_path", "/mnt/data"]
         imagePullPolicy: Always
         name: mnist-splitter-pod
