@@ -10,10 +10,10 @@ spec:
       - image: alicek106/ml-kubernetes-mnist:accuracy-test-0.0
         imagePullPolicy: Always
         name: accuracy-test
-        args: ["--modelpath", "/mnt/aggregated-model.h5"]
+        args: ["--modelpath", "/imdb/aggregated-model.h5"]
         volumeMounts:
           - name: my-pvc-nfs
-            mountPath: "/mnt"
+            mountPath: "/imdb"
       volumes:
       - name: my-pvc-nfs
         persistentVolumeClaim:

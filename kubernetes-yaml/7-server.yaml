@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mnist-server
+  name: imdb-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mnist-server
+      name: imdb-server
   template:
     metadata:
       labels:
-        name: mnist-server
+        name: imdb-server
     spec:
       containers:
       - image: kkp6249/imdb-kubernetes:1.0.0
         imagePullPolicy: Always
-        name: mnist-server
-        args: ["--model", "/mnt/aggregated-model.h5"]
+        name: imdb-server
+        args: ["--model", "/imdb/aggregated-model.h5"]
         volumeMounts:
           - name: my-pvc-nfs
-            mountPath: "/mnt"
+            mountPath: "/imdb"
         ports:
         - containerPort: 5000
           name: flask
@@ -31,12 +31,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mnist-server-svc
+  name: imdb-server-svc
 spec:
   ports:
     - name: service
       port: 80
       targetPort: 5000
   selector:
-    name: mnist-server
+    name: imdb-server
   type: LoadBalancer

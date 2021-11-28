@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: mnist-trainer-{{INCREMENTAL_NUMBER}}
+  name: imdb-trainer-{{INCREMENTAL_NUMBER}}
 spec:
   template:
     metadata:
@@ -11,14 +11,14 @@ spec:
       restartPolicy: Never
       containers:
       - image: kkp6249/imdb-kubernetes:trainer-1.0.0 # 2019. 03. 16 Added relu share
-        args: ["--data", "/mnt/data/{{INCREMENTAL_NUMBER}}.npz", 
+        args: ["--data", "/imdb/data/{{INCREMENTAL_NUMBER}}.npz", 
                "--epoch", "{{EPOCH}}", "--batch", "{{BATCH}}", 
-               "--savefile", "/mnt/model/{{INCREMENTAL_NUMBER}}-model.h5"]
+               "--savefile", "/imdb/model/{{INCREMENTAL_NUMBER}}-model.h5"]
         imagePullPolicy: Always
-        name: mnist-trainer-job
+        name: imdb-trainer-job
         volumeMounts:
           - name: my-pvc-nfs
-            mountPath: "/mnt"
+            mountPath: "/imdb"
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

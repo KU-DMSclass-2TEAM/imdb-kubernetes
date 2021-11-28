@@ -1,19 +1,19 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: mnist-splitter
+  name: imdb-splitter
 spec:
   template:
     spec:
       restartPolicy: Never
       containers:
       - image: kkp6249/imdb-kubernetes:splitter-1.0.1
-        args: ["--n_container", "{{WORKER_NUMBER}}", "--output_path", "/mnt/data"]
+        args: ["--n_container", "{{WORKER_NUMBER}}", "--output_path", "/imdb/data"]
         imagePullPolicy: Always
-        name: mnist-splitter-pod
+        name: imdb-splitter-pod
         volumeMounts:
           - name: my-pvc-nfs
-            mountPath: "/mnt"
+            mountPath: "/imdb"
       volumes:
       - name: my-pvc-nfs
         persistentVolumeClaim:
