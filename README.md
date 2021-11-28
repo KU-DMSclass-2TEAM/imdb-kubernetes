@@ -30,7 +30,7 @@ We assume that ```gcloud``` is installed and available. If not, please refer the
 2. Get access credential for Kubernetes.
 
    ```
-   $ gcloud container clusters get-credentials my-kube-cluster --zone us-central1-a
+   $ gcloud container clusters get-credentials my-kube-cluster --zone asia-northeast3-a
    ```
 
    Test the kubectl command.
@@ -49,7 +49,7 @@ We assume that ```gcloud``` is installed and available. If not, please refer the
 
    ```
    $ gcloud compute disks create --type=pd-standard \
-   --size=1GB --zone=us-central1-a ml-kube-disk
+   --size=10GB --zone=us-central1-a ml-kube-disk
    ```
 
    Congraturation! You has just created a Kubernetes cluster with 3 worker nodes.
