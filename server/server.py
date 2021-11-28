@@ -45,7 +45,7 @@ def upload():
         pad_sequence = pad_sequences([prepro_sentence(str(data))], maxlen = 500)
         
         with session.as_default():
-            predict = model.predict(pad_sequence)
+            predict = float(model.predict(pad_sequence))
             if predict > 0.5:
                 result = "{:.2f}% _good".format(predict*100)
             else:
