@@ -18,11 +18,11 @@ We assume that ```gcloud``` is installed and available. If not, please refer the
 
    ```
    $ gcloud container clusters create my-kube-cluster \
-   --zone=us-central1-a \
+   --zone=asia-northeast1-a \
    --cluster-version=1.11.7-gke.12 \
    --disk-size=20GB \
    --disk-type=pd-standard \
-   --num-nodes=3
+   --num-nodes=5
    ```
 
    You can adjust specified options, such as ```--zone```, ```--disk-size```, ```--num-nodes```, etc. 
@@ -77,8 +77,8 @@ We assume that ```gcloud``` is installed and available. If not, please refer the
 1. First, define environment values used in distributed MNIST learning. 
 
 2. ```
-   $ export WORKER_NUMBER=3
-   $ export EPOCH=2
+   $ export WORKER_NUMBER=5
+   $ export EPOCH=5
    $ export BATCH=100
    ```
 
