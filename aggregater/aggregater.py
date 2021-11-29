@@ -1,7 +1,27 @@
 import os
 import argparse
 import tensorflow as tf
-from modelaverage import average
+import numpy as np
+
+def average(modelfiles):
+    if len(modelfiles) == 0:
+        raise Exception('model file is not found')
+
+    modelfiles = [os.path.abspath(path) for path in modelfiles]
+    models = []
+    for idx, file in enumerate(modelfiles):
+        models.append(tf.keras.models.load_model(file, compile=False))
+        print('%d/%d files loaded' % (idx + 1, len(modelfiles)))
+
+    weights = [model.get_weights() for model in models]
+    new_weights = list()
+    for weights_list_tuple in zip(*weights):
+        new_weights.append([np.array(weights_).mean(axis=0) \
+             for weights_ in zip(*weights_list_tuple)])
+
+    model = tf.keras.models.load_model(modelfiles[0], compile=False)
+    model.set_weights(new_weights)
+    return model
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
