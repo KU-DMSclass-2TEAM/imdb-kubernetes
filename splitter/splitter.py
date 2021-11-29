@@ -4,15 +4,15 @@ import tensorflow as tf
 import os
 
 if __name__ == "__main__":
-    #parser = argparse.ArgumentParser()
-    #parser.add_argument("--n_container", type=int, required=True)
-    #parser.add_argument("--savedir", type=str, required=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--n_container", type=int, required=True)
+    parser.add_argument("--savedir", type=str, required=True)
 
-    #args = parser.parse_args()
+    args = parser.parse_args()
 
     # Create output path if not exists
-    if not os.path.exists("/imdb/data"):
-        os.makedirs("/imdb/data")
+    if not os.path.exists(args.saverdir):
+        os.makedirs(args.saverdir)
 
     (train_x, train_y), (test_x, test_y) = tf.keras.datasets.imdb.load_data(num_words = 10000)
 
@@ -23,8 +23,8 @@ if __name__ == "__main__":
     print("flag2")
 
 
-    n_data = len(train_x) // 5
+    n_data = len(train_x) // args.n_container
     for name, i in enumerate(range(0, len(train_x), n_data)):
         start, end = i, i + n_data
-        np.savez(os.path.join("/imdb/data", str(name)), x=train_x[start:end], y=train_y[start:end])
+        np.savez(os.path.join(args.saverdir, str(name)), x=train_x[start:end], y=train_y[start:end])
     print("flag3")
