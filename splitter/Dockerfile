@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.15.0
+FROM tensorflow/tensorflow
 LABEL email="syoon369@gmail.com"
 RUN apt-get update
 WORKDIR /home
