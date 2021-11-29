@@ -7,7 +7,7 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-      - image: alicek106/ml-kubernetes-mnist:aggregator-0.1
+      - image: kkp6249/imdb-kubernetes:aggregater-1.1.2
         args: ["--dir", "/imdb/model/", "--savefile", "/imdb/aggregated-model.h5"]
         imagePullPolicy: Always
         name: mnist-aggregator-pod
