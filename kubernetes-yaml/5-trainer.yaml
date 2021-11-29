@@ -10,10 +10,10 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-      - image: kkp6249/imdb-kubernetes:trainer-1.0.0 # 2019. 03. 16 Added relu share
+      - image: kkp6249/imdb-kubernetes:trainer-1.1.0 # 2019. 03. 16 Added relu share
         args: ["--data", "/imdb/data/{{INCREMENTAL_NUMBER}}.npz", 
                "--epoch", "{{EPOCH}}", "--batch", "{{BATCH}}", 
-               "--savefile", "/imdb/model/{{INCREMENTAL_NUMBER}}-model.h5"]
+               "--savemodel", "/imdb/model/{{INCREMENTAL_NUMBER}}-model.h5"]
         imagePullPolicy: Always
         name: imdb-trainer-job
         volumeMounts:
