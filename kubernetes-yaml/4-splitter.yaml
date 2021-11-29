@@ -8,7 +8,7 @@ spec:
       restartPolicy: Never
       containers:
       - image: kkp6249/imdb-kubernetes:splitter-1.1.4
-        #args: ["--n_container", "{{WORKER_NUMBER}}", "--output_path", "/imdb/data"]
+        #args: ["--n_container", "{{WORKER_NUMBER}}", "--savedir", "/imdb/data"]
         imagePullPolicy: Always
         name: imdb-splitter-pod
         volumeMounts:
