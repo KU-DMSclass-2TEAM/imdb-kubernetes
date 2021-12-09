@@ -2,25 +2,21 @@ import os
 import argparse
 import tensorflow as tf
 import numpy as np
+from keras.models import load_model
+from keras.models import clone_model
+from numpy import average
+from numpy import array
 
-def average(modelfiles):
-    if len(modelfiles) == 0:
-        raise Exception('model file is not found')
-
-    modelfiles = [os.path.abspath(path) for path in modelfiles]
-    models = []
-    for idx, file in enumerate(modelfiles):
-        models.append(tf.keras.models.load_model(file, compile=False))
-        print('%d/%d files loaded' % (idx + 1, len(modelfiles)))
-
-    weights = [model.get_weights() for model in models]
-    new_weights = list()
-    for weights_list_tuple in zip(*weights):
-        new_weights.append([np.array(weights_).mean(axis=0) \
-             for weights_ in zip(*weights_list_tuple)])
-
-    model = tf.keras.models.load_model(modelfiles[0], compile=False)
-    model.set_weights(new_weights)
+def model_weight_ensemble(members, weights):
+    n_layers = len(members[0].get_weights())
+    avg_model_weights = list()
+    for layer in range(n_layers):
+        layer_weights = array([model.get_weights()[layer] for model in members])
+        avg_layer_weights = average(layer_weights, axis=0, weights=weights)
+        avg_model_weights.append(avg_layer_weights)
+    model = clone_model(members[0])
+    model.set_weights(avg_model_weights)
+    model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
     return model
 
 if __name__ == "__main__":
@@ -30,6 +26,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     dirname = os.listdir(args.dir)
+    all_models = list()
     models = list()
 
     for file in dirname:
@@ -37,6 +34,12 @@ if __name__ == "__main__":
         ext = os.path.splitext(filename)[-1].strip()
         if ext == '.h5':
             models.append(filename)
+            model = load_model(filename)
+            all_models.append(model)
+            print('>loaded %s' % filename)
 
-    averaged_model = average(models)
-    averaged_model.save(args.savefile)
+    members = all_models
+    print('Loaded %d models' % len(members))
+    n_models = len(members)
+    weights = [1/n_models for i in range(1, n_models+1)]
+    model = model_weight_ensemble(members, weights)
