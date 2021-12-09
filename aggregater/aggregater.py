@@ -16,7 +16,6 @@ def model_weight_ensemble(members, weights):
         avg_model_weights.append(avg_layer_weights)
     model = clone_model(members[0])
     model.set_weights(avg_model_weights)
-    model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
     return model
 
 if __name__ == "__main__":
@@ -42,4 +41,5 @@ if __name__ == "__main__":
     print('Loaded %d models' % len(members))
     n_models = len(members)
     weights = [1/n_models for i in range(1, n_models+1)]
+    model.summary()
     model = model_weight_ensemble(members, weights)
