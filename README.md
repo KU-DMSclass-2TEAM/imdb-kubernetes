@@ -80,75 +80,85 @@ Create PV and PVC using NFS container.
 
 If you want to view directory of NFS server, create busybox deployment and enter into container. By default, index.html and lost+found files exist.
 
-$ kubectl apply -f 9999-busybox.yaml
-$ kubectl exec -it $(kubectl get pods | grep busybox | awk '{print $1}') sh
+    $ kubectl apply -f 9999-busybox.yaml
+    $ kubectl exec -it $(kubectl get pods | grep busybox | awk '{print $1}') sh
 
-/ # ls /imdb
-index.html  lost+found
-/ # exit
+    / # ls /imdb
+    index.html  lost+found
+    / # exit
+    
 Copier IMDB dataset using copier. Copier will create datasets, the number of $(WORKER_NUMBER)
 
-$ cat 4-splitter.yaml | sed "s/{{WORKER_NUMBER}}/$WORKER_NUMBER/g" | kubectl apply -f -
+    $ cat 4-copier.yaml | sed "s/{{WORKER_NUMBER}}/$WORKER_NUMBER/g" | kubectl apply -f -
+    
 To check datasets are created, check in busybox deployment. Copied datasets exist as *.npz
 
-$ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /mnt/data
-0.npz
-1.npz
-2.npz
-3.npz
-4.npz
+    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /mnt/data
+    0.npz
+    1.npz
+    2.npz
+    3.npz
+    4.npz
+    
 Train each dataset in Kubernetes workers. Below bash commands create trainers as deployment to train and extract neural network model.
 
-$ for (( c=0; c<=($WORKER_NUMBER)-1; c++ ))
-do
-  echo $(date) [INFO] "$c"th Creating th trainer in kubernetes..
-  cat 5-trainer.yaml | sed "s/{{EPOCH}}/$EPOCH/g; s/{{BATCH}}/$BATCH/g; s/{{INCREMENTAL_NUMBER}}/$c/g;" | kubectl apply -f - &
-done
+    $ for (( c=0; c<=($WORKER_NUMBER)-1; c++ ))
+    do
+        echo $(date) [INFO] "$c"th Creating th trainer in kubernetes..
+        cat 5-trainer.yaml | sed "s/{{EPOCH}}/$EPOCH/g; s/{{BATCH}}/$BATCH/g; s/{{INCREMENTAL_NUMBER}}/$c/g;" | kubectl apply -f - &
+    done
+    
 After about a few minitues, you can view the status of trainer job. Status should be completed.
 
-$ kubectl get po
-NAME                          READY   STATUS      RESTARTS   AGE
-mnist-splitter-qgkxf          0/1     Completed   0          14m
-mnist-trainer-0-g896k         0/1     Completed   0          3m
-mnist-trainer-1-6xfkg         0/1     Completed   0          3m
-mnist-trainer-2-ppnsc         0/1     Completed   0          3m
+    $ kubectl get po
+    NAME                          READY   STATUS      RESTARTS   AGE
+    mnist-copier-qgkxf            0/1     Completed   0          14m
+    mnist-trainer-0-g896k         0/1     Completed   0          3m
+    mnist-trainer-1-6xfkg         0/1     Completed   0          3m
+    mnist-trainer-2-ppnsc         0/1     Completed   0          3m
+    
 Also you can check generated models using busybox deployment.
 
-$ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb/model
-0-model.h5
-1-model.h5
-2-model.h5
-3-model.h5
-4-model.h5
+    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb/model
+    0-model.h5
+    1-model.h5
+    2-model.h5
+    3-model.h5
+    4-model.h5
+    
 Aggregate generated models into one model. Below command creates aggregator, which aggregate models into single model.
 
-$ kubectl apply -f 6-aggregator.yaml
+    $ kubectl apply -f 6-aggregator.yaml
+    
 Check a aggregated model.
 
-$ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb
-aggregated-model.h5
-...
+    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb
+    aggregated-model.h5
+    ...
+    
 If you want to test accuracy of aggregated model, use 9999-accuracy-test deployment.
 
-$ kubectl apply -f 9999-accuracy-test.yaml
-$ kubectl logs --tail 1 $(kubectl get pods | grep accuracy-test | awk '{print $1}')
-10000/10000 [==============================] - 10s 997us/sample - loss: 1.2667 - acc: 0.8728
-Create server deployment for demo. You can test MNIST prediction.
+    $ kubectl apply -f 9999-accuracy-test.yaml
+    $ kubectl logs --tail 1 $(kubectl get pods | grep accuracy-test | awk '{print $1}')
+    25000/25000 [==============================] - 10s 997us/sample - loss: 1.2667 - acc: 0.8728
+    Create server deployment for demo. You can test MNIST prediction.
 
-$ kubectl apply -f 7-server.yaml
+    $ kubectl apply -f 7-server.yaml
+    
 After a few seconds, you can see the external IP to access the demo web page. Below example shows external IP is a.b.c.d, so you can access a.b.c.d:80 in web browser
 
-$ kubectl get svc
-NAME               TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)                      AGE
-...
-imdb-server-svc   LoadBalancer   10.19.253.70   a.b.c.d   80:30284/TCP                 12m
-...
+    $ kubectl get svc
+    NAME               TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)                      AGE
+    ...
+    imdb-server-svc   LoadBalancer   10.19.253.70   a.b.c.d   80:30284/TCP                 12m
+    ...
+    
 Write a sample IMDB data in IMDB test dataset.
 
 After writing IMDB sample, web page shows prediction result.
 
 
-Detailed Arguments of Each Component
+# Detailed Arguments of Each Component
 Copier : copier copies IMDB data equally by the number of contents. so total number of IMDB train dataset is 25000, each number of data.npz is 25000.
 
 --n_container : number of training container.
