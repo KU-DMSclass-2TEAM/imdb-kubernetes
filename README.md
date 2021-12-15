@@ -8,8 +8,8 @@ We assume that gcloud is installed and available. If not, please refer the below
 
 gcloud install guide : https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
 
-Creating Kubernetes Cluster on GKE.
-Create Kubernetes cluster first using GUI of GKE.
+#Creating Kubernetes Cluster on GKE.
+1.Create Kubernetes cluster first using GUI of GKE.
 ![image](https://user-images.githubusercontent.com/77087144/146132088-7fb116e0-4164-4ebd-afaf-084d5d64aed5.png)
 
 
@@ -23,7 +23,7 @@ And set the default of num_nodes to 2 for nfs-server. Also you have to set surge
 ![image](https://user-images.githubusercontent.com/77087144/146133192-fb690b4d-7c8f-4c31-baf7-e33493e2aeca.png)
 
 
-Get access credential for Kubernetes.
+2.Get access credential for Kubernetes.
 
 $ gcloud container clusters get-credentials my-kube-cluster --zone us-central1-a
 Test the kubectl command.
