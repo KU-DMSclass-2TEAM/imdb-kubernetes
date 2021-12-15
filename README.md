@@ -159,13 +159,13 @@ After writing IMDB sample, web page shows prediction result.
 
 
 # Detailed Arguments of Each Component
-Copier : copier copies IMDB data equally by the number of contents. so total number of IMDB train dataset is 25000, each number of data.npz is 25000.
+`Copier` : copier copies IMDB data equally by the number of contents. so total number of IMDB train dataset is 25000, each number of data.npz is 25000.
 
 --n_container : number of training container.
 
 --savedir : saved directory path of splitted data. each data files saved .npz file format will be saved as number of --n_container.
  
-Trainer : trainer will independently learn the data into each container and create a model for each container as *.h5 file format.
+`Trainer` : trainer will independently learn the data into each container and create a model for each container as *.h5 file format.
 
 --data : Data you want to learn from the container.
 
@@ -177,9 +177,9 @@ Trainer : trainer will independently learn the data into each container and crea
 
 Usage Example
 
-$python train.py --data 0.npz --epoch 3 --batch 100 --savemodel model.h5
+    $python train.py --data 0.npz --epoch 3 --batch 100 --savemodel model.h5
                                     
-Aggregater : aggregater averages the stored models in each container. aggregater will find *.h5 file format in --dir directory and average it.
+`Aggregater` : aggregater averages the stored models in each container. aggregater will find *.h5 file format in --dir directory and average it.
 
 --dir : In trainer.py, *.h5 files saved in specific directory. This --dir parameter refers to its saved folder.
 
@@ -187,9 +187,10 @@ Aggregater : aggregater averages the stored models in each container. aggregater
 
 Usage Example
 
-$python aggregater.py --dir ./models --savefile final_model.h5
-Server : server serves as the final average model and serves through flasks.
+    $python aggregater.py --dir ./models --savefile final_model.h5
+    
+`Server` : server serves as the final average model and serves through flasks.
 
 Usage Example
 
-model = tf.keras.models.load_model('your_model.h5', compile=False)
+    model = tf.keras.models.load_model('your_model.h5', compile=False)
