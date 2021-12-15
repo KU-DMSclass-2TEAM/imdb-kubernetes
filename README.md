@@ -25,23 +25,25 @@ And set the default of num_nodes to 2 for nfs-server. Also you have to set surge
 
 2.Get access credential for Kubernetes.
 
-$ gcloud container clusters get-credentials my-kube-cluster --zone us-central1-a
+  $ gcloud container clusters get-credentials my-kube-cluster --zone us-central1-a
+  
 Test the kubectl command.
 
-$ kubectl get nodes
-NAME                                             STATUS   ROLES    AGE   VERSION
-gke-my-kube-cluster-default-pool-d0ed872d-33mt   Ready    <none>   49s   v1.21.5-gke.1302
-gke-my-kube-cluster-default-pool-d0ed872d-gd42   Ready    <none>   49s   v1.21.5-gke.1302
-gke-my-kube-cluster-default-pool-d0ed872d-wpv4   Ready    <none>   49s   v1.21.5-gke.1302
+  $ kubectl get nodes
+  NAME                                             STATUS   ROLES    AGE   VERSION
+  gke-my-kube-cluster-default-pool-d0ed872d-33mt   Ready    <none>   49s   v1.21.5-gke.1302
+  gke-my-kube-cluster-default-pool-d0ed872d-gd42   Ready    <none>   49s   v1.21.5-gke.1302
+  gke-my-kube-cluster-default-pool-d0ed872d-wpv4   Ready    <none>   49s   v1.21.5-gke.1302
+  
 Create a external disk to provide dataset to each Kubernetes node.
 
 Also, you can adjust the options such as --size, --zone, etc.
 
-$ gcloud compute disks create --type=pd-standard \
---size=10GB --zone=asia-northeast3-a ml-disk
+  $ gcloud compute disks create --type=pd-standard \
+  --size=10GB --zone=asia-northeast3-a ml-disk
 Congraturation! You has just created a Kubernetes cluster with 3 worker nodes.
 
-Architecture Diagram
+
 
 
 Copier copy IMDB dataset into multiple dataset.
