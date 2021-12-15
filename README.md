@@ -54,7 +54,7 @@ Aggregator aggregates output models extracted from step 2.
 
 Server container provides web page to demonstrate IMDB prediction.
 
-Quickstart of Distributed IMDB
+# Quickstart of Distributed IMDB
 First, define environment values used in distributed IMDB learning.
 
 $ export WORKER_NUMBER=5
