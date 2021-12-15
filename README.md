@@ -1,5 +1,5 @@
 # ml-kubernetes : IMDB Example
-ml-kubernetes IMDB is simple project that trains and predicts IMDB dataset in Kubernetes cluster. This projects conducts PoC (Proof of Concept) of distributed machine learning on container environment.
+`ml-kubernetes IMDB` is simple project that trains and predicts `IMDB dataset` in Kubernetes cluster. This projects conducts PoC (Proof of Concept) of distributed machine learning on container environment.
 
 Prerequisite
 All steps are done on GKE of Google Cloud Platform. You have to install gcloud comman line to use GKE.
