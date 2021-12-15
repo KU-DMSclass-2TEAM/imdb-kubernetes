@@ -41,6 +41,7 @@ Also, you can adjust the options such as --size, --zone, etc.
 
   $ gcloud compute disks create --type=pd-standard \
   --size=10GB --zone=asia-northeast3-a ml-disk
+  
 Congraturation! You has just created a Kubernetes cluster with 3 worker nodes.
 
 
