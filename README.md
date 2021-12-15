@@ -9,11 +9,11 @@ We assume that gcloud is installed and available. If not, please refer the below
 gcloud install guide : https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
 
 # Creating Kubernetes Cluster on GKE.
-1. Create Kubernetes cluster first using GUI of GKE.
+1. Create Kubernetes cluster first using `GUI of GKE`.
 ![image](https://user-images.githubusercontent.com/77087144/146132088-7fb116e0-4164-4ebd-afaf-084d5d64aed5.png)
 
 
-You can adjust specified options, such as --zone, --disk-size, --num-nodes, etc.
+You can adjust specified options, such as `--zone`, `--disk-size`, `--num-nodes`, etc.
 
 You can set specified options, such as 'zone','disk-size','num_nodes', etc.
 
@@ -37,7 +37,7 @@ Test the kubectl command.
   
 Create a external disk to provide dataset to each Kubernetes node.
 
-Also, you can adjust the options such as --size, --zone, etc.
+Also, you can adjust the options such as `--size`, `--zone`, etc.
 
     $ gcloud compute disks create --type=pd-standard \
     --size=10GB --zone=asia-northeast3-a ml-disk
@@ -47,31 +47,35 @@ Congraturation! You has just created a Kubernetes cluster with 3 worker nodes.
 
 
 
-Copier copy IMDB dataset into multiple dataset.
+1.`Copier` copy IMDB dataset into multiple dataset.
 
-Trainer conducts distributed learning process in Kubernetes container.
+2.`Trainer` conducts distributed learning process in Kubernetes container.
 
-Aggregator aggregates output models extracted from step 2.
+3.`Aggregator` aggregates output models extracted from step 2.
 
-Server container provides web page to demonstrate IMDB prediction.
+4.`Server` container provides web page to demonstrate IMDB prediction.
 
 # Quickstart of Distributed IMDB
 First, define environment values used in distributed IMDB learning.
 
-$ export WORKER_NUMBER=5
-$ export EPOCH=3
-$ export BATCH=100
-$WORKER_NUMBER : The number of workers in distributed learning. If it is set to 5, copier will copy IMDB dataset into 5 files, and the 5 trainers will be spawn in each Kubernetes node as a container.
-$EPOCH : // TODO
-$BATCH : // TODO
+    $ export WORKER_NUMBER=5
+    $ export EPOCH=3
+    $ export BATCH=100
+    
+* $WORKER_NUMBER : The number of workers in distributed learning. If it is set to 5, copier will copy IMDB dataset into 5 files, and the 5 trainers will be spawn in each Kubernetes node as a container.
+* $EPOCH : // TODO
+* $BATCH : // TODO
+
 Create NFS container to store datasets and models. It will be used as a PV, PVC in Kubernetes. 1-nfs-deployment.yaml creates NFS server container to be mounted to other components, such as splitter, trainer.
 
-$ kubectl apply -f 1-nfs-deployment.yaml
-$ kubectl apply -f 2-nfs-service.yaml
+    $ kubectl apply -f 1-nfs-deployment.yaml
+    $ kubectl apply -f 2-nfs-service.yaml
+    
 Create PV and PVC using NFS container.
 
-$ export NFS_CLUSTER_IP=$(kubectl get svc/nfs-server -o jsonpath='{.spec.clusterIP}')
-$ cat 3-nfs-pv-pvc.yaml | sed "s/{{NFS_CLUSTER_IP}}/$NFS_CLUSTER_IP/g" | kubectl apply -f -
+    $ export NFS_CLUSTER_IP=$(kubectl get svc/nfs-server -o jsonpath='{.spec.clusterIP}')
+    $ cat 3-nfs-pv-pvc.yaml | sed "s/{{NFS_CLUSTER_IP}}/$NFS_CLUSTER_IP/g" | kubectl apply -f -
+    
 [Optional (but recommended) ]
 
 If you want to view directory of NFS server, create busybox deployment and enter into container. By default, index.html and lost+found files exist.
