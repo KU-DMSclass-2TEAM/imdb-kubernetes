@@ -17,8 +17,9 @@ You can adjust specified options, such as `--zone`, `--disk-size`, `--num-nodes`
 
 You can set specified options, such as 'zone','disk-size','num_nodes', etc.
 
-If you want to build Kubernetes Cluster with AutoScaling, then you have to set autoscaling option in default-pool menu.
-And set the default of num_nodes to 2 for nfs-server. Also you have to set surge upgrade option to 3 for trainer jobs.
+If you want to build Kubernetes Cluster with `AutoScaling`, then you have to set `autoscaling option` in `default-pool menu`.
+And set the default of num_nodes to 2 for `nfs-server`. Also you have to set surge upgrade option to 3 for trainer jobs.
+Then you can use `node AutoScaling`.
 
 ![image](https://user-images.githubusercontent.com/77087144/146133192-fb690b4d-7c8f-4c31-baf7-e33493e2aeca.png)
 
