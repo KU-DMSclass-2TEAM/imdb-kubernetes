@@ -3,8 +3,8 @@
 
 1. 도커 설치
 
-    $ curl -fsSL https://get.docker.com/ | sudo sh
-    
+    $ curl -fsSL https://get.docker.com/ | sudo sh    
+
 만약 curl 툴이 없다면
 
     $ sudo apt-get install curl
