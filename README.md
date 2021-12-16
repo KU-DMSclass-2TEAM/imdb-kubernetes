@@ -106,7 +106,7 @@ Train each dataset in Kubernetes workers. Below bash commands create trainers as
     $ for (( c=0; c<=($WORKER_NUMBER)-1; c++ ))
     do
         echo $(date) [INFO] "$c"th Creating th trainer in kubernetes..
-        cat 5-trainer.yaml | sed "s/{{EPOCH}}/$EPOCH/g; s/{{BATCH}}/$BATCH/g; s/{{INCREMENTAL_NUMBER}}/$c/g;" | kubectl apply -f - &
+        cat trainer.yaml | sed "s/{{EPOCH}}/$EPOCH/g; s/{{BATCH}}/$BATCH/g; s/{{INCREMENTAL_NUMBER}}/$c/g;" | kubectl apply -f - &
     done
     
 After about a few minitues, you can view the status of trainer job. Status should be completed.
