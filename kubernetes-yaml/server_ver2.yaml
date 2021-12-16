@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: imdb-server2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: imdb-server2
+  template:
+    metadata:
+      labels:
+        name: imdb-server2
+    spec:
+      containers:
+      - image: kkp6249/imdb-kubernetes:server_ver2-1.0.0
+        imagePullPolicy: Always
+        name: imdb-server2
+        args: ["--dir", "/imdb/model/"]
+        volumeMounts:
+          - name: my-pvc-nfs
+            mountPath: "/imdb"
+        ports:
+        - containerPort: 5000
+          name: flask
+      volumes:
+      - name: my-pvc-nfs
+        persistentVolumeClaim:
+          claimName: nfs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: imdb-server-svc2
+spec:
+  ports:
+    - name: service
+      port: 80
+      targetPort: 5000
+  selector:
+    name: imdb-server2
+  type: LoadBalancer
