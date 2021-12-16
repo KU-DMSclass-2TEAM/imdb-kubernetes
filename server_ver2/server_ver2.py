@@ -9,9 +9,9 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dir", type=str, required=True)
-args = parser.parse_args(args.dir)
+args = parser.parse_args()
 
-dirname = os.listdir()
+dirname = os.listdir(args.dir)
 load_models = list()
 
 for file in dirname:
