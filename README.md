@@ -69,19 +69,19 @@ First, define environment values used in distributed IMDB learning.
 
 Create NFS container to store datasets and models. It will be used as a PV, PVC in Kubernetes. 1-nfs-deployment.yaml creates NFS server container to be mounted to other components, such as splitter, trainer.
 
-    $ kubectl apply -f 1-nfs-deployment.yaml
-    $ kubectl apply -f 2-nfs-service.yaml
+    $ kubectl apply -f nfs-deployment.yaml
+    $ kubectl apply -f nfs-service.yaml
     
 Create PV and PVC using NFS container.
 
     $ export NFS_CLUSTER_IP=$(kubectl get svc/nfs-server -o jsonpath='{.spec.clusterIP}')
-    $ cat 3-nfs-pv-pvc.yaml | sed "s/{{NFS_CLUSTER_IP}}/$NFS_CLUSTER_IP/g" | kubectl apply -f -
+    $ cat nfs-pv-pvc.yaml | sed "s/{{NFS_CLUSTER_IP}}/$NFS_CLUSTER_IP/g" | kubectl apply -f -
     
 [Optional (but recommended) ]
 
 If you want to view directory of NFS server, create busybox deployment and enter into container. By default, index.html and lost+found files exist.
 
-    $ kubectl apply -f 9999-busybox.yaml
+    $ kubectl apply -f busybox.yaml
     $ kubectl exec -it $(kubectl get pods | grep busybox | awk '{print $1}') sh
 
     / # ls /imdb
@@ -106,7 +106,7 @@ Train each dataset in Kubernetes workers. Below bash commands create trainers as
     $ for (( c=0; c<=($WORKER_NUMBER)-1; c++ ))
     do
         echo $(date) [INFO] "$c"th Creating th trainer in kubernetes..
-        cat 5-trainer.yaml | sed "s/{{EPOCH}}/$EPOCH/g; s/{{BATCH}}/$BATCH/g; s/{{INCREMENTAL_NUMBER}}/$c/g;" | kubectl apply -f - &
+        cat trainer.yaml | sed "s/{{EPOCH}}/$EPOCH/g; s/{{BATCH}}/$BATCH/g; s/{{INCREMENTAL_NUMBER}}/$c/g;" | kubectl apply -f - &
     done
     
 After about a few minitues, you can view the status of trainer job. Status should be completed.
@@ -129,7 +129,7 @@ Also you can check generated models using busybox deployment.
     
 Aggregate generated models into one model. Below command creates aggregator, which aggregate models into single model.
 
-    $ kubectl apply -f 6-aggregator.yaml
+    $ kubectl apply -f aggregator.yaml
     
 Check a aggregated model.
 
@@ -137,14 +137,14 @@ Check a aggregated model.
     aggregated-model.h5
     ...
     
-If you want to test accuracy of aggregated model, use 9999-accuracy-test deployment.
+If you want to test accuracy of aggregated model, use accuracy-test deployment.
 
     $ kubectl apply -f 9999-accuracy-test.yaml
     $ kubectl logs --tail 1 $(kubectl get pods | grep accuracy-test | awk '{print $1}')
     25000/25000 [==============================] - 10s 997us/sample - loss: 1.2667 - acc: 0.8728
     Create server deployment for demo. You can test MNIST prediction.
 
-    $ kubectl apply -f 7-server.yaml
+    $ kubectl apply -f server.yaml
     
 After a few seconds, you can see the external IP to access the demo web page. Below example shows external IP is a.b.c.d, so you can access a.b.c.d:80 in web browser
 
