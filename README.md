@@ -26,7 +26,7 @@ Then you can use `node AutoScaling`.
 
 2.Get access credential for Kubernetes.
 
-    $ gcloud container clusters get-credentials my-kube-cluster --zone us-central1-a
+    $ gcloud container clusters get-credentials my-kube-cluster --zone asia-northeast3-a
   
 Test the kubectl command.
 
