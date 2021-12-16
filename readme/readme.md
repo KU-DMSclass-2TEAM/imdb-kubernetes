@@ -8,4 +8,3 @@ $ sudo apt-get install curl
 
 2. root 권한 부여하기
 $ sudo usermod -aG docker $USER
-    
