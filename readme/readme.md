@@ -3,9 +3,7 @@
 
 1. 도커 설치
 
-    $ gcloud container clusters get-credentials my-kube-cluster --zone asia-northeast3-a
-
-$ curl -fsSL https://get.docker.com/ | sudo sh
+    $ curl -fsSL https://get.docker.com/ | sudo sh
     
 만약 curl 툴이 없다면
 
