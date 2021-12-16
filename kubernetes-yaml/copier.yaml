@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: imdb-copier
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - image: kkp6249/imdb-kubernetes:copier-1.0.0
+        args: ["--n_container", "{{WORKER_NUMBER}}", "--savedir", "/imdb/data"]
+        imagePullPolicy: Always
+        name: imdb-copier-pod
+        volumeMounts:
+          - name: my-pvc-nfs
+            mountPath: "/imdb"
+      volumes:
+      - name: my-pvc-nfs
+        persistentVolumeClaim:
+          claimName: nfs
