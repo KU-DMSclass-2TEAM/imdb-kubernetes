@@ -125,6 +125,7 @@ Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명
     4-model.h5
     
 데모용 서버 배포를 만들어서 IMDB 예측을 test할 수 있다.
+
     $ kubectl apply -f server_ver2.yaml
 
 
