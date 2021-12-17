@@ -10,14 +10,14 @@
 ![image](https://user-images.githubusercontent.com/77087144/146132088-7fb116e0-4164-4ebd-afaf-084d5d64aed5.png)
 
 
-If you want to build Kubernetes Cluster with `AutoScaling`, then you have to set `autoscaling option` in `default-pool menu`.
-And set the default of num_nodes to 2 for `nfs-server`. Also you have to set surge upgrade option to 3 for trainer jobs.
-Then you can use `node AutoScaling`.
+만약 쿠버네티스 클러스터에서 `AutoScaling`을 사용하고 싶다면, 클러스터를 생성할 때, `default-pool` 탭으로 들어가서, `자동 확장 사용 설정`을 선택해야 한다.
+그리고 `nfs-server` 를 위한 기본 노드 수는 2로 설정한다. 최대 노드 수는 `5`, 최소 노드 수는 `2`로 설정한다. 그리고 `trainer job`을 배포할 때, 더욱 빠른 학습을 위해
+노드가 빠르게 확장될 수 있어야 하므로, 일시 급증 업그레이드는 `3`으로 설정한다.
 
 ![image](https://user-images.githubusercontent.com/77087144/146133192-fb690b4d-7c8f-4c31-baf7-e33493e2aeca.png)
 
 
-2.Kubernetes에 대한 accress credential를 가져온다.
+2.Kubernetes에 대한 `access credential`를 가져온다.
 
     $ gcloud container clusters get-credentials imdb-cluster --zone asia-northeast3-a
   
