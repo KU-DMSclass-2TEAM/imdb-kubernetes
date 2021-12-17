@@ -1,12 +1,9 @@
-# ml-kubernetes - IMDB Example -
-`ml-kubernetes IMDB`는 Kubernetes 클러스터에서 `IMDB 데이터셋`을 훈련하고 예측하는 간단한 프로젝트입니다. 이 프로젝트는 컨테이너 환경에서 분산 머신러닝을 수행합니다.
+# 분산 학습 on GKE - IMDB Example -
+이 프로젝트는 `Kubernetes 클러스터에서` `IMDB 데이터셋`을 학습하고 예측하는 간단한 프로젝트입니다. 이 프로젝트는 컨테이너 환경에서 분산 머신러닝을 수행합니다.
 
-Prerequisite
-All steps are done on GKE of Google Cloud Platform. You have to install gcloud comman line to use GKE.
-
-We assume that gcloud is installed and available. If not, please refer the below link, GCP official document.
-
-gcloud install guide : https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
+* Prerequisite
+    - 모든 단계는 Google Cloud Platform의 GKE에서 수행됩니다. GKE를 사용하려면 gcloud command line을 설치해야 합니다.
+    - gcloud install guide : https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
 
 # Creating Kubernetes Cluster on GKE.
 1. Create Kubernetes cluster first using `GUI of GKE`.
