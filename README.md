@@ -110,6 +110,8 @@ Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명
     imdb-trainer-0-g896k         0/1     Completed   0          3m
     imdb-trainer-1-6xfkg         0/1     Completed   0          3m
     imdb-trainer-2-ppnsc         0/1     Completed   0          3m
+    imdb-trainer-3-28den         0/1     Completed   0          3m
+    imdb-trainer-4-cn0e3         0/1     Completed   0          3m
     
 이것 또한 busybox 배포를 사용하여 생성된 모델을 확인할 수 있다.
 
@@ -117,6 +119,8 @@ Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명
     0-model.h5
     1-model.h5
     2-model.h5
+    3-model.h5
+    4-model.h5
     
 데모용 서버 배포를 만들어서 IMDB 예측을 test할 수 있다.
     $ kubectl apply -f server_ver2.yaml
