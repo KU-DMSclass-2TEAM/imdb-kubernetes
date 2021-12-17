@@ -42,7 +42,7 @@ client로 부터 받은 문자열 (영화 리뷰) 이 긍정 리뷰인지 부정
 * method는 POST
 * model file은 volume에 저장되어 있다.
 
-```
+```c
 @app.route('/upload', methods=['POST']) 
 def upload():
     if request.method == 'POST': 
@@ -76,7 +76,7 @@ Python, flask framework 사용
 1. load된 모델 여러개로 predict을 수행한다.
 2. 예측값들을 총합하여 평균을 계산한다.
 
-``` C
+```c
 def predict(pad_sequence):
     predicts = list()
     for i in range(len(load_models)):
@@ -100,7 +100,7 @@ def predict(pad_sequence):
 1. 위 내용과 같다.
 2. predict(pad_sequence) 함수를 수행하여 얻은 결과물을 출력.
 
-``` C
+```c
 @app.route('/upload', methods=['POST'])
 def upload():
     if request.method == 'POST':
