@@ -72,6 +72,7 @@ Python, flask framework 사용
 1. load된 모델 여러개로 predict을 수행한다.
 2. 예측값들을 총합하여 평균을 계산한다.
 
+
     def predict(pad_sequence):
         predicts = list()
         for i in range(len(load_models)):
@@ -93,6 +94,7 @@ Python, flask framework 사용
 ### upload / 예측 api
 1. 위 내용과 같다.
 2. predict(pad_sequence) 함수를 수행하여 얻은 결과물을 출력.
+
 
     @app.route('/upload', methods=['POST'])
     def upload():
