@@ -93,6 +93,8 @@ copier가 $(WORKER_NUMBER)개의 데이터 세트를 생성한다.
     0.npz
     1.npz
     2.npz
+    3.npz
+    4.npz
     
 Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명령은 neural network model을 학습하고 추출하기 위한 trainer를 만든다.
 
