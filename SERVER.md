@@ -25,7 +25,7 @@ Python, flask framework 사용
             except KeyError:
                 encoded.append(2)
         return encoded
-
+                    
 ### index
 초기 화면
 
@@ -40,7 +40,7 @@ client로 부터 받은 문자열 (영화 리뷰) 이 긍정 리뷰인지 부정
 * method는 POST
 * model file은 volume에 저장되어 있다.
 
-''' C
+'''
 @app.route('/upload', methods=['POST']) 
 def upload():
     if request.method == 'POST': 
