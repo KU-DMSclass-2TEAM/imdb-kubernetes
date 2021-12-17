@@ -39,7 +39,7 @@ Then you can use `node AutoScaling`.
 
 
 
-1.`splitter` copy IMDB dataset into multiple dataset.
+1.`copier` copy IMDB dataset into multiple dataset.
 
 2.`Trainer` conducts distributed learning process in Kubernetes container.
 
@@ -47,14 +47,16 @@ Then you can use `node AutoScaling`.
 
 4.`Server` container provides web page to demonstrate IMDB prediction.
 
-# Quickstart of Distributed IMDB
+# Quickstart 1번째 방법
 먼저, 분산 IMDB 학습에 사용되는 환경 값을 정의한다.
 
     $ export WORKER_NUMBER=5
     $ export EPOCH=3
     $ export BATCH=100
     
-* $WORKER_NUMBER : 분산 학습의 worker 수 이다. 5로 설정하면 복사기가 IMDB 데이터 세트를 5개의 파일로 나누고 5개의 trainer가 각 Kubernetes 노드에서 컨테이너로 생성된다.
+* $WORKER_NUMBER 
+    - 분산 학습의 worker 수 이다. 5로 설정하면 복사기가 IMDB 데이터 세트를 5개로 복사하고 5개의 trainer가 각 Kubernetes 노드에서 컨테이너로 생성된다.
+
 * $EPOCH 
 * $BATCH
 
@@ -79,11 +81,11 @@ NFS 서버의 디렉토리를 보고 싶다면 busybox 배포를 생성하고 �
     index.html  lost+found
     / # exit
     
-Copier IMDB dataset using copier. Copier will create datasets, the number of $(WORKER_NUMBER)
+copier가 $(WORKER_NUMBER)개의 데이터 세트를 생성한다.
 
-    $ cat 4-copier.yaml | sed "s/{{WORKER_NUMBER}}/$WORKER_NUMBER/g" | kubectl apply -f -
+    $ cat copier.yaml | sed "s/{{WORKER_NUMBER}}/$WORKER_NUMBER/g" | kubectl apply -f -
     
-To check datasets are created, check in busybox deployment. Copied datasets exist as *.npz
+데이터 세트가 생성되었는지 확인하려면 busybox 배포를 확인한다. 복사된 데이터세트는 *.npz로 존재한다.
 
     $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /mnt/data
     0.npz
@@ -92,7 +94,7 @@ To check datasets are created, check in busybox deployment. Copied datasets exis
     3.npz
     4.npz
     
-Train each dataset in Kubernetes workers. Below bash commands create trainers as deployment to train and extract neural network model.
+Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명령은 neural network model을 학습하고 추출하기 위한 trainer를 만든다.
 
     $ for (( c=0; c<=($WORKER_NUMBER)-1; c++ ))
     do
@@ -100,7 +102,7 @@ Train each dataset in Kubernetes workers. Below bash commands create trainers as
         cat trainer.yaml | sed "s/{{EPOCH}}/$EPOCH/g; s/{{BATCH}}/$BATCH/g; s/{{INCREMENTAL_NUMBER}}/$c/g;" | kubectl apply -f - &
     done
     
-After about a few minitues, you can view the status of trainer job. Status should be completed.
+몇 분 후에 trainer job의 상태를 볼 수 있다. (상태가 완료되어야 한다.)
 
     $ kubectl get po
     NAME                          READY   STATUS      RESTARTS   AGE
@@ -109,7 +111,7 @@ After about a few minitues, you can view the status of trainer job. Status shoul
     mnist-trainer-1-6xfkg         0/1     Completed   0          3m
     mnist-trainer-2-ppnsc         0/1     Completed   0          3m
     
-Also you can check generated models using busybox deployment.
+이것 또한 busybox 배포를 사용하여 생성된 모델을 확인할 수 있다.
 
     $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb/model
     0-model.h5
@@ -118,10 +120,23 @@ Also you can check generated models using busybox deployment.
     3-model.h5
     4-model.h5
     
+데모용 서버 배포를 만들어서 IMDB 예측을 test할 수 있다.
+    $ kubectl apply -f server_ver2.yaml
+
 Aggregate generated models into one model. Below command creates aggregator, which aggregate models into single model.
 
     $ kubectl apply -f aggregator.yaml
+
+몇 초 후 외부 IP가 표시되어 데모 웹 페이지에 액세스할 수 있다. 아래 예는 외부 IP가 a.b.c.d이므로 웹 브라우저에서 a.b.c.d:80에 액세스할 수 있음을 보여준다.
+
+    $ kubectl get svc
+    NAME               TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)                      AGE
+    ...
+    imdb-server-svc   LoadBalancer   10.19.253.70   a.b.c.d   80:30284/TCP                 12m
+    ...
     
+
+# 2번째 방법
 Check a aggregated model.
 
     $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb
