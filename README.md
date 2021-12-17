@@ -45,7 +45,7 @@ github의 repository를 GCP로 복제해온다.
 
 2.`Trainer` Kubernetes 컨테이너에서 분산 학습 프로세스를 수행한다.
 
-3.`Server` 컨테이너는 IMDB 예측을 보여주는 웹 페이지를 제공한다다.
+3.`Server` 컨테이너는 IMDB 예측을 보여주는 웹 페이지를 제공한다.
 
 # Quickstart - copier 방법-
 먼저, 분산 IMDB 학습에 사용되는 환경 값을 정의한다.
@@ -145,7 +145,7 @@ Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명
 
 3.`Aggregator` 2단계에서 추출한 모델을 aggregate 한다.
 
-4.`Server` 컨테이너는 IMDB 예측을 보여주는 웹 페이지를 제공한다다.
+4.`Server` 컨테이너는 IMDB 예측을 보여주는 웹 페이지를 제공한다.
 
 splitter가 데이터 세트를 $(WORKER_NUMBER)개로 나누어서 데이터 세트를 생성한다.
 
