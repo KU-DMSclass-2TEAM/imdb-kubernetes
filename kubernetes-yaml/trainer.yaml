@@ -19,16 +19,16 @@ spec:
         volumeMounts:
           - name: my-pvc-nfs
             mountPath: "/imdb"
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-               matchExpressions:
-                  - key: "job-type"
-                    operator: In
-                    values:
-                      - trainer
-              topologyKey: "kubernetes.io/hostname"
+#       affinity:
+#         podAntiAffinity:
+#           requiredDuringSchedulingIgnoredDuringExecution:
+#             - labelSelector:
+#                matchExpressions:
+#                   - key: "job-type"
+#                     operator: In
+#                     values:
+#                       - trainer
+#               topologyKey: "kubernetes.io/hostname"
 
       volumes:
       - name: my-pvc-nfs
