@@ -26,9 +26,19 @@ Python, flask framework 사용
                 encoded.append(2)
         return encoded
 
+### index
+초기 화면
+
+    @app.route('/') 
+        def index():
+            return render_template('index.html') 
+
 ### upload / 예측 api
 client로 부터 받은 문자열 (영화 리뷰) 이 긍정 리뷰인지 부정 리뷰인지 예측 한다.
+1. 문자열을 prepro_sentence를 통해 인코딩을 하고 패딩을 수행한다.
+2. model.predict(패딩한 값)을 통해 예측값을 얻는다.
 <method는 POST>
+<model file은 volume에 저장되어 있다.>
 
     @app.route('/upload', methods=['POST']) 
     def upload():
@@ -50,6 +60,11 @@ Python, flask framework 사용
 
 * 함수 
     - prepro_sentence({문자열})
-    - predict()
+    - predict(pad_sequence)
     - index()
     - upload()
+
+### prepro_sentence
+위 내용과 같다.
+
+### predict(pad_sequence)
