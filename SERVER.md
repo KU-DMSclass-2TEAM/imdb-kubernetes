@@ -37,8 +37,8 @@ Python, flask framework 사용
 client로 부터 받은 문자열 (영화 리뷰) 이 긍정 리뷰인지 부정 리뷰인지 예측 한다.
 1. 문자열을 prepro_sentence를 통해 인코딩을 하고 패딩을 수행한다.
 2. model.predict(패딩한 값)을 통해 예측값을 얻는다.
-<method는 POST>
-<model file은 volume에 저장되어 있다.>
+* method는 POST
+* model file은 volume에 저장되어 있다.
 
     @app.route('/upload', methods=['POST']) 
     def upload():
@@ -68,3 +68,38 @@ Python, flask framework 사용
 위 내용과 같다.
 
 ### predict(pad_sequence)
+분산으로 수행된 모델을 통해 예측 하는 함수
+1. load된 모델 여러개로 predict을 수행한다.
+2. 예측값들을 총합하여 평균을 계산한다.
+
+    def predict(pad_sequence):
+        predicts = list()
+        for i in range(len(load_models)):
+            predicts.extend(load_models[i].predict(pad_sequence))
+        good_pro = list()
+        for i in range(len(predicts)):
+            if predicts[i][0] > 0.5:
+                pro = "{:.2f}".format(predicts[i][0]*100)
+                good_pro.append(float(pro))
+            else:
+                pro = "{:.2f}".format((1-predicts[i][0])*100)
+                good_pro.append(100-float(pro))
+        aver_good = "{:.2f}".format(sum(good_pro) / len(good_pro))
+        return aver_good
+
+### index()
+위 내용과 같다.
+
+### upload / 예측 api
+1. 위 내용과 같다.
+2. predict(pad_sequence) 함수를 수행하여 얻은 결과물을 출력.
+
+    @app.route('/upload', methods=['POST'])
+    def upload():
+        if request.method == 'POST':
+            data = request.form['review']
+            pad_sequence = pad_sequences([prepro_sentence(str(data))], maxlen = 500)
+            aver_good = predict(pad_sequence)
+            result = "good review : " + aver_good +" / " + " bad review : " + str(100-float(aver_good))
+
+            return render_template('predict.html', predict=result)
