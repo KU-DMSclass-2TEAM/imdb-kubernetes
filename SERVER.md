@@ -10,6 +10,7 @@ Python, flask framework 사용
 1. 알파벳과 숫자를 제외하고 모두 제거 하며, 소문자화 한다.
 2. 정수로 인코딩 하는 과정이다. 단어 집합의 크기를 10,000으로 제한하고 10,000이상의 숫자와 단어 집합에 없는 단어는 <unk> 토큰으로 변환한다.
 
+```c
     def prepro_sentence(new_sentence):
         new_sentence = re.sub('[^0-9a-zA-Z]', '', new_sentence).lower()
         
@@ -25,7 +26,8 @@ Python, flask framework 사용
             except KeyError:
                 encoded.append(2)
         return encoded
-                    
+```
+
 ### index
 초기 화면
 
@@ -40,7 +42,7 @@ client로 부터 받은 문자열 (영화 리뷰) 이 긍정 리뷰인지 부정
 * method는 POST
 * model file은 volume에 저장되어 있다.
 
-'''
+```
 @app.route('/upload', methods=['POST']) 
 def upload():
     if request.method == 'POST': 
@@ -55,7 +57,7 @@ def upload():
                 result = "{:.2f}% _bad".format((1-predict)*100)
         
         return render_template('predict.html', predict=result)
-'''
+```
 
 # server_ver2
 Python, flask framework 사용
@@ -74,7 +76,7 @@ Python, flask framework 사용
 1. load된 모델 여러개로 predict을 수행한다.
 2. 예측값들을 총합하여 평균을 계산한다.
 
-''' C
+``` C
 def predict(pad_sequence):
     predicts = list()
     for i in range(len(load_models)):
@@ -89,7 +91,7 @@ def predict(pad_sequence):
             good_pro.append(100-float(pro))
     aver_good = "{:.2f}".format(sum(good_pro) / len(good_pro))
     return aver_good
-'''
+```
 
 ### index()
 위 내용과 같다.
@@ -98,7 +100,7 @@ def predict(pad_sequence):
 1. 위 내용과 같다.
 2. predict(pad_sequence) 함수를 수행하여 얻은 결과물을 출력.
 
-''' C
+``` C
 @app.route('/upload', methods=['POST'])
 def upload():
     if request.method == 'POST':
@@ -108,4 +110,4 @@ def upload():
         result = "good review : " + aver_good +" / " + " bad review : " + str(100-float(aver_good))
 
         return render_template('predict.html', predict=result)
-'''
+```
