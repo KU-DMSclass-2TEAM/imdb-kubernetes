@@ -32,5 +32,5 @@ if __name__ == "__main__":
     n_data = args.n_container
     for name in range(n_data):
         start, end = 0, len(train_x)
-        np.savez(os.path.join(args.saverdir, str(name)), x=train_x[start:end], y=train_y[start:end])
+        np.savez(os.path.join(args.savedir, str(name)), x=train_x[start:end], y=train_y[start:end])
     print("flag3")
