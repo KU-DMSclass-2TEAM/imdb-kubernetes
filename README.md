@@ -26,16 +26,20 @@
     NAME                                             STATUS   ROLES    AGE   VERSION
     gke-imdb-cluster-default-pool-d0ed872d-33mt   Ready    <none>   49s   v1.21.5-gke.1302
     gke-imdb-cluster-default-pool-d0ed872d-gd42   Ready    <none>   49s   v1.21.5-gke.1302
-    gke-imdb-cluster-default-pool-d0ed872d-wpv4   Ready    <none>   49s   v1.21.5-gke.1302
-  
+    
+
+2개의 worker 노드가 있는 Kubernetes 클러스터 생성이 완료되었다.
+
 각 Kubernetes 노드에 데이터 세트를 제공하기 위해 외부 디스크를 생성한다.
 
 `--size`, `--zone` 등과 같은 옵션을 조정할 수 있다.
 
     $ gcloud compute disks create --type=pd-standard \
     --size=10GB --zone=asia-northeast3-a ml-disk
-  
-3개의 worker 노드가 있는 Kubernetes 클러스터 생성이 완료 되었다.
+
+github의 repository를 GCP로 복제해온다.
+
+    $ git clone https://github.com/KU-DMSclass-2TEAM/imdb-kubernetes.git
 
 1.`copier` 데이터세트를 여러 데이터세트로 복사한다.
 
