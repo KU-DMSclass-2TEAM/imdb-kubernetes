@@ -77,7 +77,7 @@ NFS 컨테이너를 사용하여 PV 및 PVC를 생성한다.
 NFS 서버의 디렉토리를 보고 싶다면 busybox 배포를 생성하고 컨테이너에 들어간다. 기본적으로 index.html 및 lost+found 파일이 존재한다.
 
     $ kubectl apply -f busybox.yaml
-    $ kubectl exec -it $(kubectl get pods | grep busybox | awk '{print $1}') sh
+    $ kubectl exec -it $(kubectl get pods | grep busybox | awk '{print $1}') -- sh
 
     / # ls /imdb
     index.html  lost+found
@@ -89,7 +89,7 @@ copier가 $(WORKER_NUMBER)개의 데이터 세트를 생성한다.
     
 데이터 세트가 생성되었는지 확인하려면 busybox 배포를 확인한다. 복사된 데이터세트는 *.npz로 존재한다.
 
-    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb/data
+    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') -- ls /imdb/data
     0.npz
     1.npz
     2.npz
@@ -153,7 +153,7 @@ splitter가 데이터 세트를 $(WORKER_NUMBER)개로 나누어서 데이터 �
 
 데이터 세트가 생성되었는지 확인하려면 busybox 배포를 확인한다. 복사된 데이터세트는 *.npz로 존재한다.
 
-    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb/data
+    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') -- ls /imdb/data
     0.npz
     1.npz
     2.npz
@@ -172,7 +172,7 @@ Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명
 
 하나로 합친 모델을 확인한다.
 
-    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb
+    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') -- ls /imdb
     aggregated-model.h5
     ...
     
