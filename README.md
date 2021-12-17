@@ -1,18 +1,14 @@
 # 분산 학습 on GKE - IMDB Example -
-이 프로젝트는 `Kubernetes 클러스터에서` `IMDB 데이터셋`을 학습하고 예측하는 간단한 프로젝트입니다. 이 프로젝트는 컨테이너 환경에서 분산 머신러닝을 수행합니다.
+이 프로젝트는 `Kubernetes 클러스터에서` `IMDB 데이터셋`을 학습하고 예측하는 간단한 프로젝트이다. 이 프로젝트는 컨테이너 환경에서 분산 머신러닝을 수행한다.
 
 * Prerequisite
-    - 모든 단계는 Google Cloud Platform의 GKE에서 수행됩니다. GKE를 사용하려면 gcloud command line을 설치해야 합니다.
+    - 모든 단계는 Google Cloud Platform의 GKE에서 수행됩니다. GKE를 사용하려면 gcloud command line을 설치해야 한다.
     - gcloud install guide : https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
 
-# Creating Kubernetes Cluster on GKE.
-1. Create Kubernetes cluster first using `GUI of GKE`.
+# GKE에서 Kubernetes Cluster 생성하기
+1. 먼저 'GKE의 GUI'를 사용하여 Kubernetes 클러스터를 만든다.
 ![image](https://user-images.githubusercontent.com/77087144/146132088-7fb116e0-4164-4ebd-afaf-084d5d64aed5.png)
 
-
-You can adjust specified options, such as `--zone`, `--disk-size`, `--num-nodes`, etc.
-
-You can set specified options, such as 'zone','disk-size','num_nodes', etc.
 
 If you want to build Kubernetes Cluster with `AutoScaling`, then you have to set `autoscaling option` in `default-pool menu`.
 And set the default of num_nodes to 2 for `nfs-server`. Also you have to set surge upgrade option to 3 for trainer jobs.
@@ -21,11 +17,10 @@ Then you can use `node AutoScaling`.
 ![image](https://user-images.githubusercontent.com/77087144/146133192-fb690b4d-7c8f-4c31-baf7-e33493e2aeca.png)
 
 
-2.Get access credential for Kubernetes.
+2.Kubernetes에 대한 accress credential를 가져온다.
 
-    $ gcloud container clusters get-credentials my-kube-cluster --zone asia-northeast3-a
+    $ gcloud container clusters get-credentials imdb-cluster --zone asia-northeast3-a
   
-Test the kubectl command.
 
     $ kubectl get nodes
     NAME                                             STATUS   ROLES    AGE   VERSION
@@ -33,19 +28,18 @@ Test the kubectl command.
     gke-my-kube-cluster-default-pool-d0ed872d-gd42   Ready    <none>   49s   v1.21.5-gke.1302
     gke-my-kube-cluster-default-pool-d0ed872d-wpv4   Ready    <none>   49s   v1.21.5-gke.1302
   
-Create a external disk to provide dataset to each Kubernetes node.
+각 Kubernetes 노드에 데이터 세트를 제공하기 위해 외부 디스크를 생성한다.
 
-Also, you can adjust the options such as `--size`, `--zone`, etc.
+`--size`, `--zone` 등과 같은 옵션을 조정할 수 있다.
 
     $ gcloud compute disks create --type=pd-standard \
     --size=10GB --zone=asia-northeast3-a ml-disk
   
-Congraturation! You has just created a Kubernetes cluster with 3 worker nodes.
+3개의 worker 노드가 있는 Kubernetes 클러스터 생성이 완료 되었다.
 
 
 
-
-1.`Copier` copy IMDB dataset into multiple dataset.
+1.`splitter` copy IMDB dataset into multiple dataset.
 
 2.`Trainer` conducts distributed learning process in Kubernetes container.
 
@@ -54,7 +48,7 @@ Congraturation! You has just created a Kubernetes cluster with 3 worker nodes.
 4.`Server` container provides web page to demonstrate IMDB prediction.
 
 # Quickstart of Distributed IMDB
-First, define environment values used in distributed IMDB learning.
+먼저, 분산 IMDB 학습에 사용되는 환경 값을 정의합니다.
 
     $ export WORKER_NUMBER=5
     $ export EPOCH=3
