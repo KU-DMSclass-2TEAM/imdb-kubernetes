@@ -1,5 +1,5 @@
-# ml-kubernetes : IMDB Example
-`ml-kubernetes IMDB` is simple project that trains and predicts `IMDB dataset` in Kubernetes cluster. This projects conducts PoC (Proof of Concept) of distributed machine learning on container environment.
+# ml-kubernetes - IMDB Example -
+`ml-kubernetes IMDB`는 Kubernetes 클러스터에서 `IMDB 데이터셋`을 훈련하고 예측하는 간단한 프로젝트입니다. 이 프로젝트는 컨테이너 환경에서 분산 머신러닝을 수행합니다.
 
 Prerequisite
 All steps are done on GKE of Google Cloud Platform. You have to install gcloud comman line to use GKE.
@@ -137,13 +137,7 @@ Check a aggregated model.
     aggregated-model.h5
     ...
     
-If you want to test accuracy of aggregated model, use accuracy-test deployment.
-
-    $ kubectl apply -f 9999-accuracy-test.yaml
-    $ kubectl logs --tail 1 $(kubectl get pods | grep accuracy-test | awk '{print $1}')
-    25000/25000 [==============================] - 10s 997us/sample - loss: 1.2667 - acc: 0.8728
-    Create server deployment for demo. You can test MNIST prediction.
-
+Create server deployment for demo. You can test MNIST prediction.
     $ kubectl apply -f server.yaml
     
 After a few seconds, you can see the external IP to access the demo web page. Below example shows external IP is a.b.c.d, so you can access a.b.c.d:80 in web browser
