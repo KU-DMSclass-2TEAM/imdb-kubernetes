@@ -43,11 +43,9 @@ Then you can use `node AutoScaling`.
 
 2.`Trainer` conducts distributed learning process in Kubernetes container.
 
-3.`Aggregator` aggregates output models extracted from step 2.
+3.`Server` container provides web page to demonstrate IMDB prediction.
 
-4.`Server` container provides web page to demonstrate IMDB prediction.
-
-# Quickstart 1번째 방법
+# Quickstart - copier 방법-
 먼저, 분산 IMDB 학습에 사용되는 환경 값을 정의한다.
 
     $ export WORKER_NUMBER=5
@@ -105,11 +103,11 @@ Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명
 몇 분 후에 trainer job의 상태를 볼 수 있다. (상태가 완료되어야 한다.)
 
     $ kubectl get po
-    NAME                          READY   STATUS      RESTARTS   AGE
-    mnist-copier-qgkxf            0/1     Completed   0          14m
-    mnist-trainer-0-g896k         0/1     Completed   0          3m
-    mnist-trainer-1-6xfkg         0/1     Completed   0          3m
-    mnist-trainer-2-ppnsc         0/1     Completed   0          3m
+    NAME                         READY   STATUS      RESTARTS   AGE
+    imdb-copier-qgkxf            0/1     Completed   0          14m
+    imdb-trainer-0-g896k         0/1     Completed   0          3m
+    imdb-trainer-1-6xfkg         0/1     Completed   0          3m
+    imdb-trainer-2-ppnsc         0/1     Completed   0          3m
     
 이것 또한 busybox 배포를 사용하여 생성된 모델을 확인할 수 있다.
 
@@ -117,15 +115,10 @@ Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명
     0-model.h5
     1-model.h5
     2-model.h5
-    3-model.h5
-    4-model.h5
     
 데모용 서버 배포를 만들어서 IMDB 예측을 test할 수 있다.
     $ kubectl apply -f server_ver2.yaml
 
-Aggregate generated models into one model. Below command creates aggregator, which aggregate models into single model.
-
-    $ kubectl apply -f aggregator.yaml
 
 몇 초 후 외부 IP가 표시되어 데모 웹 페이지에 액세스할 수 있다. 아래 예는 외부 IP가 a.b.c.d이므로 웹 브라우저에서 a.b.c.d:80에 액세스할 수 있음을 보여준다.
 
@@ -136,17 +129,51 @@ Aggregate generated models into one model. Below command creates aggregator, whi
     ...
     
 
-# 2번째 방법
-Check a aggregated model.
+# Quickstart - splitter 방법-
+
+1.`splitter` copy IMDB dataset into multiple dataset.
+
+2.`Trainer` conducts distributed learning process in Kubernetes container.
+
+3.`Aggregator` aggregates output models extracted from step 2.
+
+4.`Server` container provides web page to demonstrate IMDB prediction.
+
+splitter가 데이터 세트를 $(WORKER_NUMBER)개로 나누어서 데이터 세트를 생성한다.
+
+    $ cat splitter.yaml | sed "s/{{WORKER_NUMBER}}/$WORKER_NUMBER/g" | kubectl apply -f -
+
+데이터 세트가 생성되었는지 확인하려면 busybox 배포를 확인한다. 복사된 데이터세트는 *.npz로 존재한다.
+
+    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /mnt/data
+    0.npz
+    1.npz
+    2.npz
+    3.npz
+    4.npz
+    
+Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명령은 neural network model을 학습하고 추출하기 위한 trainer를 만든다.
+
+    $ for (( c=0; c<=($WORKER_NUMBER)-1; c++ ))
+    do
+        echo $(date) [INFO] "$c"th Creating th trainer in kubernetes..
+        cat trainer.yaml | sed "s/{{EPOCH}}/$EPOCH/g; s/{{BATCH}}/$BATCH/g; s/{{INCREMENTAL_NUMBER}}/$c/g;" | kubectl apply -f - &
+    done
+
+생성된 모델을 하나의 모델로 합친다. 아래 명령은 모델을 단일 모델로 합치는 aggregator를 만든다.
+
+    $ kubectl apply -f aggregator.yaml
+
+하나로 합친 모델을 확인한다.
 
     $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb
     aggregated-model.h5
     ...
     
-Create server deployment for demo. You can test MNIST prediction.
+데모용 서버 배포를 만들어서 IMDB 예측을 test할 수 있다.
     $ kubectl apply -f server.yaml
     
-After a few seconds, you can see the external IP to access the demo web page. Below example shows external IP is a.b.c.d, so you can access a.b.c.d:80 in web browser
+몇 초 후 외부 IP가 표시되어 데모 웹 페이지에 액세스할 수 있다. 아래 예는 외부 IP가 a.b.c.d이므로 웹 브라우저에서 a.b.c.d:80에 액세스할 수 있음을 보여준다.
 
     $ kubectl get svc
     NAME               TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)                      AGE
@@ -154,10 +181,8 @@ After a few seconds, you can see the external IP to access the demo web page. Be
     imdb-server-svc   LoadBalancer   10.19.253.70   a.b.c.d   80:30284/TCP                 12m
     ...
     
-Write a sample IMDB data in IMDB test dataset.
-
-After writing IMDB sample, web page shows prediction result.
-
+웹페이지에서 영화리뷰를 작성하고 submit 하면,
+예측된 결과를 볼 수 있을 것이다.
 
 # Detailed Arguments of Each Component
 `Copier` : copier copies IMDB data equally by the number of contents. so total number of IMDB train dataset is 25000, each number of data.npz is 25000.
