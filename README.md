@@ -48,29 +48,29 @@ Then you can use `node AutoScaling`.
 4.`Server` container provides web page to demonstrate IMDB prediction.
 
 # Quickstart of Distributed IMDB
-먼저, 분산 IMDB 학습에 사용되는 환경 값을 정의합니다.
+먼저, 분산 IMDB 학습에 사용되는 환경 값을 정의한다.
 
     $ export WORKER_NUMBER=5
     $ export EPOCH=3
     $ export BATCH=100
     
-* $WORKER_NUMBER : The number of workers in distributed learning. If it is set to 5, copier will copy IMDB dataset into 5 files, and the 5 trainers will be spawn in each Kubernetes node as a container.
-* $EPOCH : // TODO
-* $BATCH : // TODO
+* $WORKER_NUMBER : 분산 학습의 worker 수 이다. 5로 설정하면 복사기가 IMDB 데이터 세트를 5개의 파일로 나누고 5개의 trainer가 각 Kubernetes 노드에서 컨테이너로 생성된다.
+* $EPOCH 
+* $BATCH
 
-Create NFS container to store datasets and models. It will be used as a PV, PVC in Kubernetes. 1-nfs-deployment.yaml creates NFS server container to be mounted to other components, such as splitter, trainer.
+데이터 세트 및 모델을 저장할 NFS 컨테이너를 생성한다. Kubernetes에서 PV, PVC로 사용된다. nfs-deployment.yaml은 splitter, trainer와 같은 다른 구성 요소에 mounted할 NFS 서버 컨테이너를 생성한다.
 
     $ kubectl apply -f nfs-deployment.yaml
     $ kubectl apply -f nfs-service.yaml
     
-Create PV and PVC using NFS container.
+NFS 컨테이너를 사용하여 PV 및 PVC를 생성한다.
 
     $ export NFS_CLUSTER_IP=$(kubectl get svc/nfs-server -o jsonpath='{.spec.clusterIP}')
     $ cat nfs-pv-pvc.yaml | sed "s/{{NFS_CLUSTER_IP}}/$NFS_CLUSTER_IP/g" | kubectl apply -f -
     
-[Optional (but recommended) ]
+[ 옵션 ]
 
-If you want to view directory of NFS server, create busybox deployment and enter into container. By default, index.html and lost+found files exist.
+NFS 서버의 디렉토리를 보고 싶다면 busybox 배포를 생성하고 컨테이너에 들어간다. 기본적으로 index.html 및 lost+found 파일이 존재한다.
 
     $ kubectl apply -f busybox.yaml
     $ kubectl exec -it $(kubectl get pods | grep busybox | awk '{print $1}') sh
