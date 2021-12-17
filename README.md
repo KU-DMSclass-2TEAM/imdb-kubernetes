@@ -24,9 +24,9 @@ Then you can use `node AutoScaling`.
 
     $ kubectl get nodes
     NAME                                             STATUS   ROLES    AGE   VERSION
-    gke-my-kube-cluster-default-pool-d0ed872d-33mt   Ready    <none>   49s   v1.21.5-gke.1302
-    gke-my-kube-cluster-default-pool-d0ed872d-gd42   Ready    <none>   49s   v1.21.5-gke.1302
-    gke-my-kube-cluster-default-pool-d0ed872d-wpv4   Ready    <none>   49s   v1.21.5-gke.1302
+    gke-imdb-cluster-default-pool-d0ed872d-33mt   Ready    <none>   49s   v1.21.5-gke.1302
+    gke-imdb-cluster-default-pool-d0ed872d-gd42   Ready    <none>   49s   v1.21.5-gke.1302
+    gke-imdb-cluster-default-pool-d0ed872d-wpv4   Ready    <none>   49s   v1.21.5-gke.1302
   
 각 Kubernetes 노드에 데이터 세트를 제공하기 위해 외부 디스크를 생성한다.
 
@@ -39,11 +39,11 @@ Then you can use `node AutoScaling`.
 
 
 
-1.`copier` copy IMDB dataset into multiple dataset.
+1.`copier` 데이터세트를 여러 데이터세트로 복사한다.
 
-2.`Trainer` conducts distributed learning process in Kubernetes container.
+2.`Trainer` Kubernetes 컨테이너에서 분산 학습 프로세스를 수행한다.
 
-3.`Server` container provides web page to demonstrate IMDB prediction.
+3.`Server` 컨테이너는 IMDB 예측을 보여주는 웹 페이지를 제공한다다.
 
 # Quickstart - copier 방법-
 먼저, 분산 IMDB 학습에 사용되는 환경 값을 정의한다.
@@ -56,7 +56,9 @@ Then you can use `node AutoScaling`.
     - 분산 학습의 worker 수 이다. 5로 설정하면 복사기가 IMDB 데이터 세트를 5개로 복사하고 5개의 trainer가 각 Kubernetes 노드에서 컨테이너로 생성된다.
 
 * $EPOCH 
+    - epoch 수를 설정한다.
 * $BATCH
+    - batch size를 설정한다.
 
 데이터 세트 및 모델을 저장할 NFS 컨테이너를 생성한다. Kubernetes에서 PV, PVC로 사용된다. nfs-deployment.yaml은 splitter, trainer와 같은 다른 구성 요소에 mounted할 NFS 서버 컨테이너를 생성한다.
 
@@ -85,7 +87,7 @@ copier가 $(WORKER_NUMBER)개의 데이터 세트를 생성한다.
     
 데이터 세트가 생성되었는지 확인하려면 busybox 배포를 확인한다. 복사된 데이터세트는 *.npz로 존재한다.
 
-    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /mnt/data
+    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb/data
     0.npz
     1.npz
     2.npz
@@ -131,13 +133,13 @@ Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명
 
 # Quickstart - splitter 방법-
 
-1.`splitter` copy IMDB dataset into multiple dataset.
+1.`splitter` 데이터세트를 여러 데이터세트로 나눈다.
 
-2.`Trainer` conducts distributed learning process in Kubernetes container.
+2.`Trainer` Kubernetes 컨테이너에서 분산 학습 프로세스를 수행한다.
 
-3.`Aggregator` aggregates output models extracted from step 2.
+3.`Aggregator` 2단계에서 추출한 모델을 aggregate 한다.
 
-4.`Server` container provides web page to demonstrate IMDB prediction.
+4.`Server` 컨테이너는 IMDB 예측을 보여주는 웹 페이지를 제공한다다.
 
 splitter가 데이터 세트를 $(WORKER_NUMBER)개로 나누어서 데이터 세트를 생성한다.
 
@@ -145,7 +147,7 @@ splitter가 데이터 세트를 $(WORKER_NUMBER)개로 나누어서 데이터 �
 
 데이터 세트가 생성되었는지 확인하려면 busybox 배포를 확인한다. 복사된 데이터세트는 *.npz로 존재한다.
 
-    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /mnt/data
+    $ kubectl exec $(kubectl get pods | grep busybox | awk '{print $1}') ls /imdb/data
     0.npz
     1.npz
     2.npz
@@ -182,41 +184,4 @@ Kubernetes worker에서 각 데이터 세트를 학습시킨다. 아래 bash 명
     ...
     
 웹페이지에서 영화리뷰를 작성하고 submit 하면,
-예측된 결과를 볼 수 있을 것이다.
-
-# Detailed Arguments of Each Component
-`Copier` : copier copies IMDB data equally by the number of contents. so total number of IMDB train dataset is 25000, each number of data.npz is 25000.
-
---n_container : number of training container.
-
---savedir : saved directory path of splitted data. each data files saved .npz file format will be saved as number of --n_container.
- 
-`Trainer` : trainer will independently learn the data into each container and create a model for each container as *.h5 file format.
-
---data : Data you want to learn from the container.
-
---epoch : number of epoch.
-
---batch : size of batch.
-
---savemodel : saved model in each container. model format should be h5 file format.
-
-Usage Example
-
-    $python train.py --data 0.npz --epoch 3 --batch 100 --savemodel model.h5
-                                    
-`Aggregater` : aggregater averages the stored models in each container. aggregater will find *.h5 file format in --dir directory and average it.
-
---dir : In trainer.py, *.h5 files saved in specific directory. This --dir parameter refers to its saved folder.
-
---savefile : savefile is final averaged model. model format should be h5 file format.
-
-Usage Example
-
-    $python aggregater.py --dir ./models --savefile final_model.h5
-    
-`Server` : server serves as the final average model and serves through flasks.
-
-Usage Example
-
-    model = tf.keras.models.load_model('your_model.h5', compile=False)
+예측된 결과를 볼 수 있을 것이다.    
