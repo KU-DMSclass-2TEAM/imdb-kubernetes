@@ -9,6 +9,7 @@ Python, flask framework 사용
 입력된 문장에 대해서 전처리, 정수 인코딩을 수행하는 함수이다.
 
 '''
+
     def prepro_sentence(new_sentence):
         new_sentence = re.sub('[^0-9a-zA-Z]', '', new_sentence).lower()
         
@@ -24,6 +25,7 @@ Python, flask framework 사용
             except KeyError:
                 encoded.append(2)
         return encoded
+
 '''
 
 ### upload / 예측 api
@@ -31,6 +33,7 @@ client로 부터 받은 문자열 (영화 리뷰) 이 긍정 리뷰인지 부정
 "method는 POST"
 
 '''
+
     @app.route('/upload', methods=['POST']) 
     def upload():
         if request.method == 'POST': 
@@ -45,6 +48,7 @@ client로 부터 받은 문자열 (영화 리뷰) 이 긍정 리뷰인지 부정
                     result = "{:.2f}% _bad".format((1-predict)*100)
         
             return render_template('predict.html', predict=result)
+
 '''
 
 # server_ver2
