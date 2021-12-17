@@ -11,21 +11,21 @@ Python, flask framework 사용
 2. 정수로 인코딩 하는 과정이다. 단어 집합의 크기를 10,000으로 제한하고 10,000이상의 숫자와 단어 집합에 없는 단어는 <unk> 토큰으로 변환한다.
 
 ```c
-    def prepro_sentence(new_sentence):
-        new_sentence = re.sub('[^0-9a-zA-Z]', '', new_sentence).lower()
+def prepro_sentence(new_sentence):
+    new_sentence = re.sub('[^0-9a-zA-Z]', '', new_sentence).lower()
         
-        word_to_index = imdb.get_word_index()
+    word_to_index = imdb.get_word_index()
         
-        encoded = []
-        for word in new_sentence.split():
-            try:
-                if word_to_index[word] <= 10000:
-                    encoded.append(word_to_index[word]+3)
-                else:
-                    encoded.append(2)
-            except KeyError:
+    encoded = []
+    for word in new_sentence.split():
+        try:
+            if word_to_index[word] <= 10000:
+                encoded.append(word_to_index[word]+3)
+            else:
                 encoded.append(2)
-        return encoded
+        except KeyError:
+            encoded.append(2)
+    return encoded
 ```
 
 ### index
@@ -93,7 +93,7 @@ def predict(pad_sequence):
     return aver_good
 ```
 
-### index()
+### index
 위 내용과 같다.
 
 ### upload / 예측 api
