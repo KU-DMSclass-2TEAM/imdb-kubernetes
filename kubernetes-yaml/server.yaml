@@ -13,7 +13,7 @@ spec:
         name: imdb-server
     spec:
       containers:
-      - image: kkp6249/imdb-kubernetes:1.0.0
+      - image: kkp6249/imdb-kubernetes:server-2.0.1
         imagePullPolicy: Always
         name: imdb-server
         args: ["--model", "/imdb/aggregated-model.h5"]
