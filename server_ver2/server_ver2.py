@@ -39,20 +39,14 @@ def prepro_sentence(new_sentence):
             encoded.append(2)
     return encoded
 
-def predict(pad_sequence):
-    predicts = list()
-    for i in range(len(load_models)):
-        predicts.extend(load_models[i].predict(pad_sequence))
-    good_pro = list()
-    for i in range(len(predicts)):
-        if predicts[i][0] > 0.5:
-            pro = "{:.2f}".format(predicts[i][0]*100)
-            good_pro.append(float(pro))
-        else:
-            pro = "{:.2f}".format((1-predicts[i][0])*100)
-            good_pro.append(100-float(pro))
-    aver_good = "{:.2f}".format(sum(good_pro) / len(good_pro))
-    return aver_good
+def check(good_cnt, bad_cnt):
+    if good_cnt > bad_cnt:
+        result = "good"
+    elif good_ cnt < bad_cnt:
+        result = "bad"
+    else:
+        result = "good? bad?"
+    return result
 
 @app.route('/')
 def index():
@@ -60,12 +54,30 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload():
+    good_cnt = 0
+    bad_cnt = 0
     if request.method == 'POST':
         data = request.form['review']
         pad_sequence = pad_sequences([prepro_sentence(str(data))], maxlen = 500)
-        aver_good = predict(pad_sequence)
-        result = "good review : " + aver_good +" / " + " bad review : " + str(100-float(aver_good))
+        predicts = list()
+        for i in range(len(load_models)):
+            predicts.extend(load_models[i].predict(pad_sequence))
+        good_pro = list()
+        for i in range(len(predicts)):
+            if predicts[i][0] > 0.5:
+                pro = "good"
+                good_pro.append(pro)
+            else:
+                pro = "bad"
+                good_pro.append(pro)
 
+        for i in range(len(predicts)):
+            if good_pro[i] == "good":
+                good_cnt+=1
+            else:
+                bad_cnt+=1
+
+        result = check(good_cnt, bad_cnt)
         return render_template('predict.html', predict=result)
 
 if __name__ == '__main__':
